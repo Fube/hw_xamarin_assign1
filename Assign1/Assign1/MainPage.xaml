@@ -51,7 +51,11 @@
             </Grid>
 
             <Button Text="ADD" Clicked="AddClicked" />
-            <Button Text="Display" />
+            <Button Text="Display" Clicked="DisplayClicked"/>
+
+            <CollectionView x:Name="collectionView">
+
+            </CollectionView>
 
         </StackLayout>
     </ScrollView>

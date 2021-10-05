@@ -8,23 +8,20 @@ using Xamarin.Forms;
 
 namespace Assign1
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : ContentPage, INotifyPropertyChanged
     {
-        public Employee employee { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private Employee _employee;
+        public Employee employee { get => _employee; set
+            {
+                _employee = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Employee)));
+            } }
         public MainPage()
         {
             employee = new Employee();
             InitializeComponent();
             BindingContext = this;
-        }
-
-        private bool IsValid()
-        {
-            if (!(dayTime.IsChecked ^ evening.IsChecked)) return false;
-
-
-
-            return true;
         }
 
         async private void AddClicked(object sender, EventArgs e)
@@ -37,7 +34,13 @@ namespace Assign1
                 return;
             }
 
-            Console.WriteLine(employee.Salary);
+            await App.Database.SaveEmployeeAsync(employee);
+            employee = new Employee();
+        }
+
+        async private void DisplayClicked(object sender, EventArgs e)
+        {
+            collectionView.ItemsSource = await App.Database.GetEmployeeAsync();
         }
     }
 }
