@@ -10,12 +10,12 @@ namespace Assign1
 {
     public partial class MainPage : ContentPage, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public new event PropertyChangedEventHandler PropertyChanged;
         private Employee _employee;
         public Employee employee { get => _employee; set
             {
                 _employee = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Employee)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(employee)));
             } }
         public MainPage()
         {
@@ -40,7 +40,13 @@ namespace Assign1
 
         async private void DisplayClicked(object sender, EventArgs e)
         {
-            collectionView.ItemsSource = await App.Database.GetEmployeeAsync();
+            var list = await App.Database.GetEmployeeAsync();
+            if (list.Count == 0)
+            {
+                await DisplayAlert("Alert", "Nothing to show", "Ok");
+                return;
+            }
+            collectionView.ItemsSource = list;
         }
     }
 }
